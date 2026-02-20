@@ -12,6 +12,26 @@ from tkinter import messagebox, simpledialog
 # variáveis globais que controlam o comportamento do robô em tempo de execução.
 # --- ADICIONE ESTAS LINHAS PARA CORRIGIR O ERRO DO EMOJI ---
 LOG_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "robo.log")
+import difflib
+import requests
+from curl_cffi import requests as cffi_requests
+import sys
+import io
+import os
+import openpyxl
+from datetime import datetime
+from tkinter import messagebox, simpledialog
+
+# ==================================================================================
+#  SEÇÃO 1: IMPORTS E CONFIGURAÇÃO GLOBAL
+# ==================================================================================
+# Responsável por: Carregar todas as bibliotecas, constantes de configuração e
+# variáveis globais que controlam o comportamento do robô em tempo de execução.
+# ==================================================================================
+
+# --- ADICIONE ESTAS LINHAS PARA CORRIGIR O ERRO DO EMOJI ---
+LOG_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "robo.log")
+
 class TeeStream(io.TextIOBase):
     def __init__(self, *streams):
         self.streams = streams
@@ -30,6 +50,7 @@ class TeeStream(io.TextIOBase):
                 stream.flush()
             except Exception:
                 pass
+
 _stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8', line_buffering=True, write_through=True)
 _stderr = io.TextIOWrapper(sys.stderr.buffer, encoding='utf-8', line_buffering=True, write_through=True)
 _log_file = open(LOG_PATH, "a", encoding="utf-8", buffering=1)
@@ -81,22 +102,6 @@ try:
 except ImportError:
     print("❌ ERRO: FALTA 'openpyxl'. Instale com: pip install openpyxl")
     input("Enter para sair..."); exit()
-# ================= CARREGAMENTO DE CONFIGURAÇÕES =================
-def carregar_configuracoes():
-    """Carrega todas as configurações do arquivo config.json"""
-    try:
-        # Localiza config.json na mesma pasta do executável/script (proteção contra atalhos/_MEIPASS)
-        def _base_path():
-            if getattr(sys, 'frozen', False):
-                return os.path.dirname(sys.executable)
-            return os.path.dirname(os.path.abspath(__file__))
-
-        CONFIG_PATH = os.path.join(_base_path(), 'config.json')
-
-        with open(CONFIG_PATH, 'r', encoding='utf-8') as f:
-            config = json.load(f)
-        
-        configuracoes = {
             'nome_grupo': config.get('grupo_whatsapp', 'Número cliente'),
             'email_ze': config.get('email_ze', ''),
             'senha_ze': config.get('senha_ze', ''),

@@ -59,14 +59,14 @@ git clone [https://github.com/nexuslogisticadev-creator/portfolio-zebot.git](htt
 ```Bash
 pip install -r requirements.txt
 ```
-3.Execute a aplicação:
+3. Execute a aplicação:
 
 Via Interface Windows (Script): Clique no arquivo INICIAR_ROBO.bat e depois de abrir o painel clicar em iniciar sistema.
 
 Via Terminal (Para Desenvolvedores): Execute o comando python painel.py e depois clicar em iniciar sistema.
 
-4.Geração Automática do Banco de Dados:
+4. Geração Automática do Banco de Dados:
 Ao iniciar a aplicação, o motor do robô chamará a função inicializar_excel_agora(), que criará automaticamente o arquivo base (Controle_Financeiro_DD-MM-YYYY.xlsx) estruturando do zero todas as abas (EXTRATO DETALHADO, PAGAMENTO_MOTOBOYS) e colunas necessárias para o dia.
 
-5.Testes e Validação:
+5. Testes e Validação:
 Para comprovar as métricas de leitura e performance localmente, execute python teste_performance.py ou python validar_ambiente.py.

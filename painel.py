@@ -71,12 +71,19 @@ FONT_BOLD = ("Segoe UI Bold", 14)      # Negrito principal
 FONT_TITLE = ("Segoe UI Bold", 26)     # Títulos maiores
 FONT_MONO = ("Cascadia Code", 13)      # Fonte monospace moderna
 
-ARQUIVO_COMANDO = 'comando_imprimir.txt'
-ARQUIVO_CONFIG = 'config.json'
-ARQUIVO_ESTOQUE = 'estoque.json'
-ARQUIVO_ALERTAS = 'alertas_atraso.json'
-ARQUIVO_FECHAMENTO_STATUS = 'fechamento_status.json'
-ARQUIVO_MEMORIA_FECH = 'memoria_fechamento.json'
+def get_caminho_base():
+    if getattr(sys, 'frozen', False):
+        return os.path.dirname(sys.executable)
+    return os.path.dirname(os.path.abspath(__file__))
+
+# Base para todos os arquivos de dados (protege contra bug de atalho do Windows)
+BASE = get_caminho_base()
+ARQUIVO_COMANDO = os.path.join(BASE, 'comando_imprimir.txt')
+ARQUIVO_CONFIG = os.path.join(BASE, 'config.json')
+ARQUIVO_ESTOQUE = os.path.join(BASE, 'estoque.json')
+ARQUIVO_ALERTAS = os.path.join(BASE, 'alertas_atraso.json')
+ARQUIVO_FECHAMENTO_STATUS = os.path.join(BASE, 'fechamento_status.json')
+ARQUIVO_MEMORIA_FECH = os.path.join(BASE, 'memoria_fechamento.json')
 
 # ================= PERFORMANCE SETTINGS =================
 # Ajuste fino para reduzir consumo quando o painel fica aberto.
@@ -234,8 +241,8 @@ class PainelUltra(ctk.CTk):
                     except:
                         estoque_fisico = 0
                     novos_estoques.append({"nome": nome, "estoque_fisico": estoque_fisico})
-            # Atualiza estoque.json
-            with open("estoque.json", "w", encoding="utf-8") as f:
+            # Atualiza arquivo de estoque (usando caminho absoluto protegido)
+            with open(ARQUIVO_ESTOQUE, "w", encoding="utf-8") as f:
                 json.dump(novos_estoques, f, ensure_ascii=False, indent=2)
             self.mostrar_toast(f"Estoque atualizado com {len(novos_estoques)} itens do Excel!", "success")
         except Exception as e:
@@ -2165,8 +2172,8 @@ class PainelUltra(ctk.CTk):
     def carregar_estoque(self):
         """Carrega o estoque do arquivo JSON, garantindo retorno de lista."""
         try:
-            if os.path.exists("estoque.json"):
-                with open("estoque.json", "r", encoding="utf-8") as f:
+            if os.path.exists(ARQUIVO_ESTOQUE):
+                with open(ARQUIVO_ESTOQUE, "r", encoding="utf-8") as f:
                     dados = json.load(f)
                     # Conversão de legado (Dict -> Lista)
                     if isinstance(dados, dict):
@@ -2188,7 +2195,7 @@ class PainelUltra(ctk.CTk):
     def salvar_estoque_disk(self):
         """Salva a lista de estoque no disco."""
         try:
-            with open("estoque.json", 'w', encoding='utf-8') as f:
+            with open(ARQUIVO_ESTOQUE, 'w', encoding='utf-8') as f:
                 json.dump(self.estoque_data, f, indent=4, ensure_ascii=False)
         except:
             pass

@@ -2911,16 +2911,28 @@ class PainelUltra(ctk.CTk):
             self.parar_robo()
 
     def iniciar_robo(self):
-        if not os.path.exists("robo.py"):
-            messagebox.showerror("Erro", "robo.py não encontrado!")
+        # --- NOVA LÓGICA DE CAMINHO ABSOLUTO ---
+        import sys
+        if getattr(sys, 'frozen', False):
+            # Se for .exe, aponta para a pasta temporária do PyInstaller
+            caminho_robo = os.path.join(sys._MEIPASS, "robo.py")
+        else:
+            # Se for rodado no VS Code/Terminal, usa o arquivo local
+            caminho_robo = "robo.py"
+
+        if not os.path.exists(caminho_robo):
+            messagebox.showerror("Erro", f"robo.py não encontrado em:\n{caminho_robo}")
             return
+
         startupinfo = subprocess.STARTUPINFO()
         startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
         env_dict = os.environ.copy()
         env_dict["PYTHONIOENCODING"] = "utf-8"
         try:
+            # --- AGORA ELE USA O CAMINHO ABSOLUTO PARA O SUBPROCESS ---
             self.processo_robo = subprocess.Popen(
-                ["python", "-u", "robo.py"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT,
+                ["python", "-u", caminho_robo], 
+                stdout=subprocess.PIPE, stderr=subprocess.STDOUT,
                 stdin=subprocess.PIPE, text=True, encoding='utf-8', errors='ignore',
                 creationflags=subprocess.CREATE_NO_WINDOW, bufsize=1, env=env_dict
             )

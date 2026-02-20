@@ -330,7 +330,7 @@ class PainelUltra(ctk.CTk):
         self.cache_fechamento_mtime = None
         self.cache_monitor_mtime = None
         self.search_after_id = None
-        self.log_file_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "robo.log")
+        self.log_file_path = os.path.join(BASE, "robo.log")
         self.log_tail_running = False
         self._log_buffer = deque(maxlen=2000)
 
@@ -2436,7 +2436,7 @@ class PainelUltra(ctk.CTk):
             self.mostrar_toast("Estoque cheio! Nada para comprar.", "success")
             return
 
-        nome_arquivo = f"Lista_Compras_{datetime.now().strftime('%d-%m-%Y')}.txt"
+        nome_arquivo = os.path.join(BASE, f"Lista_Compras_{datetime.now().strftime('%d-%m-%Y')}.txt")
         try:
             with open(nome_arquivo, "w", encoding="utf-8") as f:
                 f.write(f"🛒 LISTA DE REPOSIÇÃO - ZÉ DELIVERY\n📅 {datetime.now().strftime('%d/%m/%Y')}\n\n")

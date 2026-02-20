@@ -85,11 +85,19 @@ except ImportError:
 def carregar_configuracoes():
     """Carrega todas as configurações do arquivo config.json"""
     try:
-        with open('config.json', 'r', encoding='utf-8') as f:
+        # Localiza config.json na mesma pasta do executável/script (proteção contra atalhos/_MEIPASS)
+        def _base_path():
+            if getattr(sys, 'frozen', False):
+                return os.path.dirname(sys.executable)
+            return os.path.dirname(os.path.abspath(__file__))
+
+        CONFIG_PATH = os.path.join(_base_path(), 'config.json')
+
+        with open(CONFIG_PATH, 'r', encoding='utf-8') as f:
             config = json.load(f)
         
         configuracoes = {
-            'nome_grupo': config.get('grupo_whatsapp', 'Zé Número cliente'),
+            'nome_grupo': config.get('grupo_whatsapp', 'Número cliente'),
             'email_ze': config.get('email_ze', ''),
             'senha_ze': config.get('senha_ze', ''),
             'telegram_token': config.get('telegram_token', ''),
@@ -101,7 +109,8 @@ def carregar_configuracoes():
             'google_sheets': config.get('google_sheets', {}),
             'debug_alerta_retirada_todos': config.get('debug_alerta_retirada_todos', False),
             'alerta_retirada_auto': config.get('alerta_retirada_auto', False),
-            'whatsapp_mencao_ativa': config.get('whatsapp_mencao_ativa', False)
+            'whatsapp_mencao_ativa': config.get('whatsapp_mencao_ativa', False),
+            'site_url': config.get('site_url', '')
         }
         
         print("✅ Configurações carregadas do config.json")
@@ -117,10 +126,16 @@ def atualizar_config_flag(chave, valor):
     """Atualiza um flag booleano no config.json e no CONFIG em memoria."""
     global CONFIG
     try:
-        with open('config.json', 'r', encoding='utf-8') as f:
+        def _base_path():
+            if getattr(sys, 'frozen', False):
+                return os.path.dirname(sys.executable)
+            return os.path.dirname(os.path.abspath(__file__))
+        CONFIG_PATH = os.path.join(_base_path(), 'config.json')
+
+        with open(CONFIG_PATH, 'r', encoding='utf-8') as f:
             config = json.load(f)
         config[chave] = bool(valor)
-        with open('config.json', 'w', encoding='utf-8') as f:
+        with open(CONFIG_PATH, 'w', encoding='utf-8') as f:
             json.dump(config, f, indent=4, ensure_ascii=False)
         if CONFIG is not None:
             CONFIG[chave] = bool(valor)
@@ -137,7 +152,7 @@ if CONFIG is None:
     exit()
 
 # ================= CONFIGURAÇÕES =================
-URL_API = "https://seller-api.ze.delivery/graphql"
+URL_API = CONFIG.get('site_url') or "https://seller-api.ze.delivery/graphql"
 NOME_GRUPO_FIXO = CONFIG['nome_grupo']
 
 DISTANCIA_MAXIMA_ENTRE_CLIENTES = 2.0 

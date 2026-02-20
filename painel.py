@@ -1,3 +1,4 @@
+
 from collections import deque
 import customtkinter as ctk
 import tkinter as tk
@@ -57,7 +58,7 @@ COR_SIDEBAR = "#060708"          # Sidebar ultra escura
 COR_CARD_BG = "#1C1D21"          # Cards com contraste melhor
 COR_BORDA = "#2F3136"            # Bordas mais visíveis
 COR_NEON = "#00E5FF"             # Azul neon para destaques
-COR_ZE_AMARELO = "#FFD700"       # Amarelo Zé Delivery
+COR_AMARELO = "#FFD700"       # Amarelo 
 COR_ZE_HOVER = "#FFC700"         # Hover mais vibrante
 COR_SUCCESS = "#00E676"          # Verde de sucesso
 COR_DANGER = "#FF1744"           # Vermelho de perigo
@@ -71,19 +72,12 @@ FONT_BOLD = ("Segoe UI Bold", 14)      # Negrito principal
 FONT_TITLE = ("Segoe UI Bold", 26)     # Títulos maiores
 FONT_MONO = ("Cascadia Code", 13)      # Fonte monospace moderna
 
-def get_caminho_base():
-    if getattr(sys, 'frozen', False):
-        return os.path.dirname(sys.executable)
-    return os.path.dirname(os.path.abspath(__file__))
-
-# Base para todos os arquivos de dados (protege contra bug de atalho do Windows)
-BASE = get_caminho_base()
-ARQUIVO_COMANDO = os.path.join(BASE, 'comando_imprimir.txt')
-ARQUIVO_CONFIG = os.path.join(BASE, 'config.json')
-ARQUIVO_ESTOQUE = os.path.join(BASE, 'estoque.json')
-ARQUIVO_ALERTAS = os.path.join(BASE, 'alertas_atraso.json')
-ARQUIVO_FECHAMENTO_STATUS = os.path.join(BASE, 'fechamento_status.json')
-ARQUIVO_MEMORIA_FECH = os.path.join(BASE, 'memoria_fechamento.json')
+ARQUIVO_COMANDO = 'comando_imprimir.txt'
+ARQUIVO_CONFIG = 'config.json'
+ARQUIVO_ESTOQUE = 'estoque.json'
+ARQUIVO_ALERTAS = 'alertas_atraso.json'
+ARQUIVO_FECHAMENTO_STATUS = 'fechamento_status.json'
+ARQUIVO_MEMORIA_FECH = 'memoria_fechamento.json'
 
 # ================= PERFORMANCE SETTINGS =================
 # Ajuste fino para reduzir consumo quando o painel fica aberto.
@@ -135,7 +129,7 @@ class JanelaEdicao(ctk.CTkToplevel):
         self.grab_set()
 
         ctk.CTkLabel(self, text="EDITAR REGISTRO", font=FONT_TITLE,
-                     text_color=COR_ZE_AMARELO).pack(pady=(20, 5))
+                     text_color=COR_AMARELO).pack(pady=(20, 5))
         self.frm = ctk.CTkFrame(self, fg_color=COR_CARD_BG)
         self.frm.pack(padx=20, pady=10, fill="both", expand=True)
 
@@ -241,8 +235,8 @@ class PainelUltra(ctk.CTk):
                     except:
                         estoque_fisico = 0
                     novos_estoques.append({"nome": nome, "estoque_fisico": estoque_fisico})
-            # Atualiza arquivo de estoque (usando caminho absoluto protegido)
-            with open(ARQUIVO_ESTOQUE, "w", encoding="utf-8") as f:
+            # Atualiza estoque.json
+            with open("estoque.json", "w", encoding="utf-8") as f:
                 json.dump(novos_estoques, f, ensure_ascii=False, indent=2)
             self.mostrar_toast(f"Estoque atualizado com {len(novos_estoques)} itens do Excel!", "success")
         except Exception as e:
@@ -254,7 +248,7 @@ class PainelUltra(ctk.CTk):
             "🍺 CERVEJAS", "🍸 DESTILADOS", "🥤 NÃO ALCOÓLICOS", 
             "⚡ ENERGÉTICOS", "🍷 VINHOS & ICES", "🍟 MERCEARIA & DIVERSOS", "📦 OUTROS"
         ]
-        self.title("ZÉ DELIVERY | CONTROL CENTER V8.0 PRO")
+        self.title("Control BOT | CONTROL CENTER V8.0 PRO")
         self.configure(fg_color=COR_BG_APP)
 
         # ==================== CONFIGURAÇÃO PROFISSIONAL DE JANELA ====================
@@ -330,7 +324,7 @@ class PainelUltra(ctk.CTk):
         self.cache_fechamento_mtime = None
         self.cache_monitor_mtime = None
         self.search_after_id = None
-        self.log_file_path = os.path.join(BASE, "robo.log")
+        self.log_file_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "robo.log")
         self.log_tail_running = False
         self._log_buffer = deque(maxlen=2000)
 
@@ -361,7 +355,7 @@ class PainelUltra(ctk.CTk):
             self.criar_menu_lateral()
             self.criar_area_principal()
 
-            self.frame_toast = ctk.CTkFrame(self, height=50, corner_radius=25, fg_color=COR_ZE_AMARELO)
+            self.frame_toast = ctk.CTkFrame(self, height=50, corner_radius=25, fg_color=COR_AMARELO)
             self.lbl_toast = ctk.CTkLabel(self.frame_toast, text="", font=FONT_BOLD, text_color="black")
             self.lbl_toast.pack(padx=30, pady=12)
 
@@ -520,9 +514,9 @@ class PainelUltra(ctk.CTk):
         self.fr_logo.grid(row=0, column=0, padx=28, pady=(28, 15), sticky="ew")
         ctk.CTkLabel(
             self.fr_logo, 
-            text="ZÉ CONTROL", 
+            text="BOT CONTROL", 
             font=("Segoe UI Black", 32), 
-            text_color=COR_ZE_AMARELO
+            text_color=COR_AMARELO
         ).pack(anchor="w")
         ctk.CTkLabel(
             self.fr_logo, 
@@ -640,7 +634,7 @@ class PainelUltra(ctk.CTk):
         self.main_container.grid_columnconfigure(0, weight=1)
         
 
-        self.barra_loading = ctk.CTkProgressBar(self.main_container, height=3, progress_color=COR_ZE_AMARELO)
+        self.barra_loading = ctk.CTkProgressBar(self.main_container, height=3, progress_color=COR_AMARELO)
         self.barra_loading.grid(row=0, column=0, sticky="ew", pady=(0, 20))
         self.barra_loading.set(0)
 
@@ -883,7 +877,7 @@ class PainelUltra(ctk.CTk):
             parent,
             text="FECHAMENTO AUTOMATICO (PRODUCAO X GARANTIA)",
             font=FONT_TITLE,
-            text_color=COR_ZE_AMARELO
+            text_color=COR_AMARELO
         ).grid(row=0, column=0, pady=(20, 10))
 
         fr_acoes = ctk.CTkFrame(parent, fg_color=COR_CARD_BG, height=60)
@@ -897,7 +891,7 @@ class PainelUltra(ctk.CTk):
             text="CALCULAR FINAL",
             command=self.calcular_fechamento_todos,
             height=40,
-            fg_color=COR_ZE_AMARELO,
+            fg_color=COR_AMARELO,
             text_color="black",
             font=FONT_BOLD
         ).pack(side="right", padx=10)
@@ -1708,7 +1702,7 @@ class PainelUltra(ctk.CTk):
         parent.grid_columnconfigure(0, weight=1)
         parent.grid_rowconfigure(4, weight=1)
 
-        self.fr_alerta = ctk.CTkFrame(parent, fg_color=COR_ZE_AMARELO, corner_radius=8, height=40)
+        self.fr_alerta = ctk.CTkFrame(parent, fg_color=COR_AMARELO, corner_radius=8, height=40)
         ctk.CTkLabel(self.fr_alerta, text="⚠️ NOVO BAIRRO DETECTADO - CADASTRE NA ABA ZONAS", text_color="black", font=FONT_BOLD).place(relx=0.5, rely=0.5, anchor="center")
 
         self.fr_cards = ctk.CTkFrame(parent, fg_color="transparent")
@@ -1716,7 +1710,7 @@ class PainelUltra(ctk.CTk):
         self.fr_cards.grid_columnconfigure((0, 1, 2), weight=1)
         self.fr_cards.grid_columnconfigure(3, weight=0)
 
-        self.card_entregas = self.criar_card_stat(self.fr_cards, "ENTREGAS", "0", COR_ZE_AMARELO, 0)
+        self.card_entregas = self.criar_card_stat(self.fr_cards, "ENTREGAS", "0", COR_AMARELO, 0)
         self.card_retiradas = self.criar_card_stat(self.fr_cards, "RETIRADAS", "0", "#FF9F0A", 1)
         self.card_fatur = self.criar_card_stat(self.fr_cards, "FATURAMENTO", "R$ 0,00", COR_SUCCESS, 2)
 
@@ -1759,7 +1753,7 @@ class PainelUltra(ctk.CTk):
 
         ctk.CTkButton(
             fr_acoes, text="📋 IMPRIMIR", width=120, height=40, command=self.imprimir_combo_motoboy,
-            fg_color=COR_ZE_AMARELO, text_color="black", hover_color=COR_ZE_HOVER, font=("Segoe UI Bold", 12)
+            fg_color=COR_AMARELO, text_color="black", hover_color=COR_ZE_HOVER, font=("Segoe UI Bold", 12)
         ).pack(side="left", padx=5)
 
         # Data operacional ao lado do fechamento/imprimir
@@ -1802,7 +1796,7 @@ class PainelUltra(ctk.CTk):
 
         self.tab_tabela = ctk.CTkTabview(
             parent, fg_color="transparent", text_color="black", segmented_button_fg_color=COR_NEON,
-            segmented_button_selected_color=COR_ZE_AMARELO, segmented_button_selected_hover_color=COR_ZE_HOVER,
+            segmented_button_selected_color=COR_AMARELO, segmented_button_selected_hover_color=COR_ZE_HOVER,
             border_width=1, border_color=COR_NEON
         )
         self.tab_tabela.grid(row=4, column=0, sticky="nsew")
@@ -1897,7 +1891,7 @@ class PainelUltra(ctk.CTk):
         self.fr_vales_left = ctk.CTkFrame(self.fr_vales_top, fg_color="transparent")
         self.fr_vales_left.grid(row=0, column=0, sticky="w")
 
-        ctk.CTkLabel(self.fr_vales_left, text="GESTÃO DE VALES E ADIANTAMENTOS", font=FONT_TITLE, text_color=COR_ZE_AMARELO).pack(side="left")
+        ctk.CTkLabel(self.fr_vales_left, text="GESTÃO DE VALES E ADIANTAMENTOS", font=FONT_TITLE, text_color=COR_AMARELO).pack(side="left")
 
         ctk.CTkLabel(self.fr_vales_left, text="Motoboy:", text_color=COR_TEXT_SEC, font=FONT_MAIN).pack(side="left", padx=(20, 8))
         self.combo_moto_vales = ctk.CTkComboBox(
@@ -2101,7 +2095,7 @@ class PainelUltra(ctk.CTk):
         parent.grid_rowconfigure(3, weight=1)
 
         # --- 1. Título ---
-        ctk.CTkLabel(parent, text="CONTROLE DE ESTOQUE (AUTOMÁTICO)", font=FONT_TITLE, text_color=COR_ZE_AMARELO).grid(row=0, column=0, pady=(20, 10))
+        ctk.CTkLabel(parent, text="CONTROLE DE ESTOQUE (AUTOMÁTICO)", font=FONT_TITLE, text_color=COR_AMARELO).grid(row=0, column=0, pady=(20, 10))
 
         # --- 2. Área de Busca ---
         fr_busca = ctk.CTkFrame(parent, fg_color="transparent")
@@ -2172,8 +2166,8 @@ class PainelUltra(ctk.CTk):
     def carregar_estoque(self):
         """Carrega o estoque do arquivo JSON, garantindo retorno de lista."""
         try:
-            if os.path.exists(ARQUIVO_ESTOQUE):
-                with open(ARQUIVO_ESTOQUE, "r", encoding="utf-8") as f:
+            if os.path.exists("estoque.json"):
+                with open("estoque.json", "r", encoding="utf-8") as f:
                     dados = json.load(f)
                     # Conversão de legado (Dict -> Lista)
                     if isinstance(dados, dict):
@@ -2195,7 +2189,7 @@ class PainelUltra(ctk.CTk):
     def salvar_estoque_disk(self):
         """Salva a lista de estoque no disco."""
         try:
-            with open(ARQUIVO_ESTOQUE, 'w', encoding='utf-8') as f:
+            with open("estoque.json", 'w', encoding='utf-8') as f:
                 json.dump(self.estoque_data, f, indent=4, ensure_ascii=False)
         except:
             pass
@@ -2399,7 +2393,7 @@ class PainelUltra(ctk.CTk):
                                        tags=(tag,))
 
         # Cores das Tags
-        self.tree_estoque.tag_configure('categoria', background="#111", foreground=COR_ZE_AMARELO, font=("Roboto", 10, "bold"))
+        self.tree_estoque.tag_configure('categoria', background="#111", foreground=COR_AMARELO, font=("Roboto", 10, "bold"))
         self.tree_estoque.tag_configure('critico', foreground=COR_DANGER, font=("Consolas", 10, "bold"))
         self.tree_estoque.tag_configure('baixo', foreground="#FFD600", font=("Consolas", 10))
         self.tree_estoque.tag_configure('normal', foreground="#00E676", font=("Consolas", 10))
@@ -2436,10 +2430,10 @@ class PainelUltra(ctk.CTk):
             self.mostrar_toast("Estoque cheio! Nada para comprar.", "success")
             return
 
-        nome_arquivo = os.path.join(BASE, f"Lista_Compras_{datetime.now().strftime('%d-%m-%Y')}.txt")
+        nome_arquivo = f"Lista_Compras_{datetime.now().strftime('%d-%m-%Y')}.txt"
         try:
             with open(nome_arquivo, "w", encoding="utf-8") as f:
-                f.write(f"🛒 LISTA DE REPOSIÇÃO - ZÉ DELIVERY\n📅 {datetime.now().strftime('%d/%m/%Y')}\n\n")
+                f.write(f"🛒 LISTA DE REPOSIÇÃO -  DELIVERY\n📅 {datetime.now().strftime('%d/%m/%Y')}\n\n")
                 for forn, itens in compras.items():
                     f.write(f"🏢 {forn}\n" + "-"*30 + "\n")
                     for nome, qtd in itens:
@@ -2472,15 +2466,15 @@ class PainelUltra(ctk.CTk):
 
         ctk.CTkLabel(fr, text="CONFIGURAÇÕES GERAIS", font=FONT_TITLE).pack(pady=20, padx=60)
 
-        self.ent_email = ctk.CTkEntry(fr, placeholder_text="E-mail Zé", width=350)
+        self.ent_email = ctk.CTkEntry(fr, placeholder_text="E-mail ", width=350)
         self.ent_email.pack(pady=5)
-        self.ent_email.insert(0, self.config_data.get("email_ze", ""))
+        self.ent_email.insert(0, self.config_data.get("email", ""))
 
-        self.ent_senha = ctk.CTkEntry(fr, placeholder_text="Senha Zé", show="●", width=350)
+        self.ent_senha = ctk.CTkEntry(fr, placeholder_text="Senha", show="●", width=350)
         self.ent_senha.pack(pady=5)
-        self.ent_senha.insert(0, self.config_data.get("senha_ze", ""))
+        self.ent_senha.insert(0, self.config_data.get("senha", ""))
 
-        ctk.CTkLabel(fr, text="📱 Telegram", font=FONT_BOLD, text_color=COR_ZE_AMARELO).pack(pady=(15, 5))
+        ctk.CTkLabel(fr, text="📱 Telegram", font=FONT_BOLD, text_color=COR_AMARELO).pack(pady=(15, 5))
 
         self.ent_tele_token = ctk.CTkEntry(fr, placeholder_text="Token Bot", width=350)
         self.ent_tele_token.pack(pady=5)
@@ -2490,7 +2484,7 @@ class PainelUltra(ctk.CTk):
         self.ent_tele_chat.pack(pady=5)
         self.ent_tele_chat.insert(0, self.config_data.get("telegram_chat_id", ""))
 
-        ctk.CTkLabel(fr, text="🧾 Google Sheets", font=FONT_BOLD, text_color=COR_ZE_AMARELO).pack(pady=(15, 5))
+        ctk.CTkLabel(fr, text="🧾 Google Sheets", font=FONT_BOLD, text_color=COR_AMARELO).pack(pady=(15, 5))
 
         sheets_cfg = self.config_data.get("google_sheets", {})
         self.ent_sheets_id = ctk.CTkEntry(fr, placeholder_text="Sheets ID", width=350)
@@ -2501,13 +2495,18 @@ class PainelUltra(ctk.CTk):
         self.ent_sheets_json.pack(pady=5)
         self.ent_sheets_json.insert(0, sheets_cfg.get("service_account_json", ""))
 
-        ctk.CTkLabel(fr, text="🛒 Lista de Compras", font=FONT_BOLD, text_color=COR_ZE_AMARELO).pack(pady=(15, 5))
+        ctk.CTkLabel(fr, text="🌐 Site / API URL", font=FONT_BOLD, text_color=COR_AMARELO).pack(pady=(15, 5))
+        self.ent_site_url = ctk.CTkEntry(fr, placeholder_text="https://seu-site-ou-api", width=350)
+        self.ent_site_url.pack(pady=5)
+        self.ent_site_url.insert(0, self.config_data.get("site_url", ""))
+
+        ctk.CTkLabel(fr, text="🛒 Lista de Compras", font=FONT_BOLD, text_color=COR_AMARELO).pack(pady=(15, 5))
         
         self.ent_compras_ignore = ctk.CTkEntry(fr, placeholder_text="Itens a ignorar, separados por vírgula", width=350)
         self.ent_compras_ignore.pack(pady=5)
         self.ent_compras_ignore.insert(0, self.config_data.get("compras_ignore_list", ""))
 
-        ctk.CTkLabel(fr, text="📢 WhatsApp Alertas", font=FONT_BOLD, text_color=COR_ZE_AMARELO).pack(pady=(15, 5))
+        ctk.CTkLabel(fr, text="📢 WhatsApp Alertas", font=FONT_BOLD, text_color=COR_AMARELO).pack(pady=(15, 5))
 
         fr_alerta_auto = ctk.CTkFrame(fr, fg_color="transparent")
         fr_alerta_auto.pack(pady=5)
@@ -2552,7 +2551,7 @@ class PainelUltra(ctk.CTk):
 
         ctk.CTkButton(fr, text="SALVAR TUDO", command=self.salvar_creds, width=350, fg_color=COR_SUCCESS, text_color="#003300", font=FONT_BOLD).pack(pady=20)
 
-        ctk.CTkLabel(fr, text="☁️ BACKUP", font=FONT_BOLD, text_color=COR_ZE_AMARELO).pack(pady=(10, 5))
+        ctk.CTkLabel(fr, text="☁️ BACKUP", font=FONT_BOLD, text_color=COR_AMARELO).pack(pady=(10, 5))
         self.lbl_path_backup = ctk.CTkLabel(fr, text=self.config_data.get("path_backup", "Nenhuma pasta"), text_color=COR_TEXT_SEC, font=("Consolas", 10))
         self.lbl_path_backup.pack()
 
@@ -2563,10 +2562,11 @@ class PainelUltra(ctk.CTk):
 
     def salvar_creds(self):
         try:
-            self.config_data["email_ze"] = self.ent_email.get()
-            self.config_data["senha_ze"] = self.ent_senha.get()
+            self.config_data["email"] = self.ent_email.get()
+            self.config_data["senha"] = self.ent_senha.get()
             self.config_data["telegram_token"] = self.ent_tele_token.get()
             self.config_data["telegram_chat_id"] = self.ent_tele_chat.get()
+            self.config_data["site_url"] = self.ent_site_url.get().strip()
             self.config_data.setdefault("google_sheets", {})["sheets_id"] = self.ent_sheets_id.get().strip()
             self.config_data.setdefault("google_sheets", {})["service_account_json"] = self.ent_sheets_json.get().strip()
             self.config_data["compras_ignore_list"] = self.ent_compras_ignore.get()
@@ -2617,7 +2617,7 @@ class PainelUltra(ctk.CTk):
         parent.grid_columnconfigure(0, weight=1)
         parent.grid_rowconfigure(1, weight=1)
 
-        ctk.CTkLabel(parent, text=">_ TERMINAL DO SISTEMA", font=FONT_BOLD, text_color=COR_ZE_AMARELO).grid(row=0, column=0, sticky="w", pady=(0, 10))
+        ctk.CTkLabel(parent, text=">_ TERMINAL DO SISTEMA", font=FONT_BOLD, text_color=COR_AMARELO).grid(row=0, column=0, sticky="w", pady=(0, 10))
 
         self.txt_logs = ctk.CTkTextbox(parent, font=FONT_MONO, text_color="#00FF9C", fg_color="#000", corner_radius=6)
         self.txt_logs.grid(row=1, column=0, sticky="nsew", pady=10)
@@ -2826,7 +2826,7 @@ class PainelUltra(ctk.CTk):
     def mostrar_toast(self, mensagem, tipo="info"):
         if not hasattr(self, "frame_toast"):
             return
-        cor = COR_SUCCESS if tipo == "success" else COR_DANGER if tipo == "error" else COR_ZE_AMARELO
+        cor = COR_SUCCESS if tipo == "success" else COR_DANGER if tipo == "error" else COR_AMARELO
         cor_texto = "black" if tipo != "error" else "white"
         self.frame_toast.configure(fg_color=cor)
         self.lbl_toast.configure(text=mensagem, text_color=cor_texto)
@@ -2891,11 +2891,11 @@ class PainelUltra(ctk.CTk):
             def enum_handler(hwnd, results):
                 if win32gui.IsWindowVisible(hwnd):
                     title = win32gui.GetWindowText(hwnd)
-                    if ("Google Chrome" in title or "Chrome" in title) and "ZÉ DELIVERY" not in title:
+                    if ("Google Chrome" in title or "Chrome" in title) and "DELIVERY" not in title:
                         results.append((hwnd, title))
                 elif acao == "show":
                     title = win32gui.GetWindowText(hwnd)
-                    if ("Google Chrome" in title or "Chrome" in title) and "ZÉ DELIVERY" not in title:
+                    if ("Google Chrome" in title or "Chrome" in title) and "DELIVERY" not in title:
                         results.append((hwnd, title))
 
             win32gui.EnumWindows(enum_handler, alvos)
@@ -2918,28 +2918,16 @@ class PainelUltra(ctk.CTk):
             self.parar_robo()
 
     def iniciar_robo(self):
-        # --- NOVA LÓGICA DE CAMINHO ABSOLUTO ---
-        import sys
-        if getattr(sys, 'frozen', False):
-            # Se for .exe, aponta para a pasta temporária do PyInstaller
-            caminho_robo = os.path.join(sys._MEIPASS, "robo.py")
-        else:
-            # Se for rodado no VS Code/Terminal, usa o arquivo local
-            caminho_robo = "robo.py"
-
-        if not os.path.exists(caminho_robo):
-            messagebox.showerror("Erro", f"robo.py não encontrado em:\n{caminho_robo}")
+        if not os.path.exists("robo.py"):
+            messagebox.showerror("Erro", "robo.py não encontrado!")
             return
-
         startupinfo = subprocess.STARTUPINFO()
         startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
         env_dict = os.environ.copy()
         env_dict["PYTHONIOENCODING"] = "utf-8"
         try:
-            # --- AGORA ELE USA O CAMINHO ABSOLUTO PARA O SUBPROCESS ---
             self.processo_robo = subprocess.Popen(
-                ["python", "-u", caminho_robo], 
-                stdout=subprocess.PIPE, stderr=subprocess.STDOUT,
+                ["python", "-u", "robo.py"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT,
                 stdin=subprocess.PIPE, text=True, encoding='utf-8', errors='ignore',
                 creationflags=subprocess.CREATE_NO_WINDOW, bufsize=1, env=env_dict
             )
@@ -3056,7 +3044,7 @@ class PainelUltra(ctk.CTk):
 
     def carregar_config(self):
         if not os.path.exists(ARQUIVO_CONFIG):
-            return {"email_ze": "", "senha_ze": "", "motoboys": {}, "bairros": {}, "respostas_bot": {}}
+            return {"email": "", "senha": "", "motoboys": {}, "bairros": {}, "respostas_bot": {}}
         try:
             with open(ARQUIVO_CONFIG, 'r', encoding='utf-8') as f:
                 config = json.load(f)
@@ -3508,8 +3496,8 @@ class PainelUltra(ctk.CTk):
         for tree in [self.tree_retirada, self.tree_cancelado, self.tree_entrega]:
             tree.configure(selectmode='browse')
             tree.tag_configure('cancelado', foreground=COR_DANGER)
-            tree.tag_configure('retirada', foreground=COR_ZE_AMARELO)
-            tree.tag_configure('bairro_desc', background=COR_ZE_AMARELO, foreground="black")
+            tree.tag_configure('retirada', foreground=COR_AMARELO)
+            tree.tag_configure('bairro_desc', background=COR_AMARELO, foreground="black")
 
         self.card_entregas.configure(text=str(data.get("count_ent", 0)))
         self.card_retiradas.configure(text=str(data.get("count_ret", 0)))
@@ -3932,4 +3920,5 @@ class PainelUltra(ctk.CTk):
 
 if __name__ == "__main__":
     app = PainelUltra()
+
     app.mainloop()

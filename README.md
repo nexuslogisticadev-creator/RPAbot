@@ -29,16 +29,16 @@ O Ze Bot atua como um middleware inteligente construído para lidar de forma aut
 1. Clone o repositório:
 ```bash
 git clone [https://github.com/nexuslogisticadev-creator/portfolio-zebot.git](https://github.com/nexuslogisticadev-creator/portfolio-zebot.git)
-
+```
 2. instale as dependências:
 ```bash
 pip install -r requirements.txt
-
+```
 3.Configure as variáveis de ambiente:
 Crie um arquivo .env na raiz do projeto e insira as chaves de API necessárias (Mockadas para teste).
 
 4.Execute o bot:
 ```bash
 python main.py
-
+```
 Desenvolvido por Adiel Alves - Desenvolvedor de Automação / RPA

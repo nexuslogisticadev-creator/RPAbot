@@ -1,0 +1,19 @@
+# Senhas e Credenciais (CRÍTICO)
+.env
+*.env
+
+# Planilhas geradas pelo Zé Bot
+Controle_Financeiro_*.xlsx
+*.xlsx
+*.csv
+
+# Lixo de compilação do PyInstaller
+build/
+dist/
+*.spec
+
+# Arquivos temporários do Python e Cache
+__pycache__/
+*.pyc
+*.pyo
+.pytest_cache/

@@ -1,0 +1,168 @@
+import urllib.parse
+from collections import deque
+import customtkinter as ctk
+import tkinter as tk
+from tkinter import ttk, messagebox, simpledialog, filedialog
+import pandas as pd
+import json
+import openpyxl
+import os
+from datetime import datetime, timedelta
+import subprocess
+import threading
+import queue
+import sys
+import unicodedata
+import time
+import webbrowser
+import difflib
+import shutil
+import ctypes
+from ctypes import wintypes
+
+# ==================================================================================
+#  SEÇÃO 1: IMPORTS E CONFIGURAÇÃO GLOBAL
+# ==================================================================================
+# Responsável por: Carregar todas as bibliotecas necessárias e definir
+# constantes globais utilizadas pelo painel.
+# ==================================================================================
+
+try:
+	import gspread
+	from google.oauth2.service_account import Credentials
+	from gspread.exceptions import WorksheetNotFound, APIError
+	TEM_SHEETS = True
+except ImportError:
+	TEM_SHEETS = False
+
+
+# --- BIBLIOTECAS DE JANELA ---
+try:
+	import pygetwindow as gw
+	import win32gui
+	import win32con
+except ImportError:
+	pass
+
+# --- CALENDÁRIO ---
+try:
+	from tkcalendar import DateEntry
+	TEM_CALENDARIO = True
+except ImportError:
+	TEM_CALENDARIO = False
+
+
+# ================= DESIGN SYSTEM PRO =================
+ctk.set_appearance_mode("Dark")
+ctk.set_default_color_theme("dark-blue")
+
+# Paleta de Cores Profissional
+COR_BG_APP = "#0E0F11"           # Fundo principal mais escuro
+COR_SIDEBAR = "#060708"          # Sidebar ultra escura
+COR_CARD_BG = "#1C1D21"          # Cards com contraste melhor
+COR_BORDA = "#2F3136"            # Bordas mais visíveis
+COR_NEON = "#00E5FF"             # Azul neon para destaques
+COR_ZE_AMARELO = "#FFD700"       # Amarelo Zé Delivery
+COR_ZE_HOVER = "#FFC700"        # Hover mais vibrante
+COR_SUCCESS = "#00E676"          # Verde de sucesso
+COR_DANGER = "#FF1744"           # Vermelho de perigo
+COR_TEXT_MAIN = "#FFFFFF"        # Texto principal branco puro
+COR_TEXT_SEC = "#A0A0A0"         # Texto secundário mais claro
+COR_TAB_HOVER = "#28292E"        # Hover de tabs
+
+# Tipografia Profissional Aumentada
+FONT_MAIN = ("Segoe UI", 14)           # Fonte principal maior
+FONT_BOLD = ("Segoe UI Bold", 14)      # Negrito principal
+FONT_TITLE = ("Segoe UI Bold", 26)     # Títulos maiores
+FONT_MONO = ("Cascadia Code", 13)      # Fonte monospace moderna
+
+ARQUIVO_COMANDO = 'comando_imprimir.txt'
+ARQUIVO_CONFIG = 'config.json'
+ARQUIVO_ESTOQUE = 'estoque.json'
+ARQUIVO_ALERTAS = 'alertas_atraso.json'
+ARQUIVO_FECHAMENTO_STATUS = 'fechamento_status.json'
+
+# ================= PERFORMANCE SETTINGS =================
+# Ajuste fino para reduzir consumo quando o painel fica aberto.
+AUTO_REFRESH_MS = 30000  # 30s - Auto-refresh do Excel
+UI_QUEUE_INTERVAL_MS = 200  # Processamento de fila UI
+UI_QUEUE_IDLE_MS = 500  # Economia de CPU quando idle
+LOGS_REFRESH_ACTIVE_MS = 1000  # 1s - Logs só quando necessário
+LOGS_REFRESH_IDLE_MS = 3000  # 3s - Economia máxima
+ALERTAS_REFRESH_MS = 15000  # 15s - Verificação de alertas
+MAX_ROWS_DISPLAY = 300  # Limite de linhas na tabela (performance)
+
+# ================= FUNÇÕES AUXILIARES =================
+def normalizar_texto(texto):
+	if not isinstance(texto, str):
+		return ""
+	try:
+		nfkd = unicodedata.normalize('NFKD', texto)
+		t = "".join([c for c in nfkd if not unicodedata.combining(c)]).lower().strip()
+		return t
+	except:
+		return texto.lower().strip()
+
+def get_data_operacional():
+	agora = datetime.now()
+	if agora.hour < 10:
+		agora -= timedelta(days=1)
+	return agora.strftime("%d-%m-%Y")
+
+def get_caminho_base():
+	if getattr(sys, 'frozen', False):
+		return os.path.dirname(sys.executable)
+	return os.path.dirname(os.path.abspath(__file__))
+
+# ================= JANELA DE EDIÇÃO (MODAL) =================
+class JanelaEdicao(ctk.CTkToplevel):
+	def __init__(self, parent, dados_pedido, callback_salvar):
+		super().__init__(parent)
+		self.title(f"EDITAR PEDIDO #{dados_pedido['Numero']}")
+		self.geometry("420x520")
+		self.configure(fg_color=COR_BG_APP)
+		self.callback = callback_salvar
+		self.dados = dados_pedido
+		self.transient(parent)
+		self.grab_set()
+
+		ctk.CTkLabel(self, text="EDITAR REGISTRO", font=FONT_TITLE, text_color=COR_ZE_AMARELO).pack(pady=(20, 5))
+		self.frm = ctk.CTkFrame(self, fg_color=COR_CARD_BG)
+		self.frm.pack(padx=20, pady=10, fill="both", expand=True)
+
+		self.criar_campo("Cliente:", dados_pedido['Cliente'], readonly=True)
+		self.entry_bairro = self.criar_campo("Bairro:", dados_pedido['Bairro'])
+		self.entry_valor = self.criar_campo("Valor (R$):", str(dados_pedido['Valor']).replace("R$ ", ""))
+		self.entry_motoboy = self.criar_campo("Motoboy:", dados_pedido['Motoboy'])
+		self.entry_status = self.criar_campo("Status:", dados_pedido['Status'])
+
+		ctk.CTkButton(
+			self, text="SALVAR", command=self.salvar,
+			fg_color=COR_SUCCESS, text_color="#003300", height=50, font=FONT_BOLD
+		).pack(pady=20, padx=20, fill="x")
+
+	def criar_campo(self, label, valor, readonly=False):
+		f = ctk.CTkFrame(self.frm, fg_color="transparent")
+		f.pack(fill="x", padx=15, pady=5)
+		ctk.CTkLabel(f, text=label, text_color=COR_TEXT_SEC, width=90, anchor="w", font=FONT_BOLD).pack(side="left")
+		e = ctk.CTkEntry(f, fg_color="#111", border_color=COR_BORDA, height=35)
+		e.insert(0, valor)
+		if readonly:
+			e.configure(state="disabled", fg_color="#222")
+		e.pack(side="left", fill="x", expand=True)
+		return e
+
+	def salvar(self):
+		novos = {
+			'Bairro': self.entry_bairro.get(),
+			'Valor (R$)': self.entry_valor.get().replace(",", "."),
+			'Motoboy': self.entry_motoboy.get(),
+			'Status': self.entry_status.get()
+		}
+		self.callback(self.dados['Numero'], novos)
+		self.destroy()
+
+# ================= INTERFACE PRINCIPAL =================
+# 
+# ESTRUTURA DA CLASSE PainelUltra:
+# 

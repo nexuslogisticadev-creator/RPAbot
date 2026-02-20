@@ -1,0 +1,211 @@
+import difflib
+import requests
+from curl_cffi import requests as cffi_requests
+import sys
+import io
+import os
+import openpyxl
+from datetime import datetime
+from tkinter import messagebox, simpledialog
+
+# ==================================================================================
+#  SEÇÃO 1: IMPORTS E CONFIGURAÇÃO GLOBAL
+# ==================================================================================
+# Responsável por: Carregar todas as bibliotecas, constantes de configuração e
+# variáveis globais que controlam o comportamento do robô em tempo de execução.
+# ==================================================================================
+
+# --- ADICIONE ESTAS LINHAS PARA CORRIGIR O ERRO DO EMOJI ---
+LOG_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "robo.log")
+
+class TeeStream(io.TextIOBase):
+    def __init__(self, *streams):
+        self.streams = streams
+
+    def write(self, s):
+        for stream in self.streams:
+            try:
+                stream.write(s)
+            except Exception:
+                pass
+        return len(s)
+
+    def flush(self):
+        for stream in self.streams:
+            try:
+                stream.flush()
+            except Exception:
+                pass
+
+_stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8', line_buffering=True, write_through=True)
+_stderr = io.TextIOWrapper(sys.stderr.buffer, encoding='utf-8', line_buffering=True, write_through=True)
+_log_file = open(LOG_PATH, "a", encoding="utf-8", buffering=1)
+sys.stdout = TeeStream(_stdout, _log_file)
+sys.stderr = TeeStream(_stderr, _log_file)
+# -----------------------------------------------------------
+import openpyxl
+from openpyxl.styles import Font, PatternFill
+import time
+import random
+from urllib.parse import urlparse
+# ... resto das importações ...from curl_cffi import requests as cffi_requests  # REDE INVISÍVEL
+import time
+import random 
+import winsound
+import pyperclip
+import os
+import sys
+import math
+import re
+import unicodedata
+import json
+import subprocess
+from datetime import datetime, timedelta
+
+# --- BIBLIOTECAS CHROME (ATUALIZADO) ---
+from selenium import webdriver
+from selenium.webdriver.chrome.service import Service as ChromeService
+from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.common.by import By
+from selenium.webdriver.common.keys import Keys
+from selenium.webdriver.common.action_chains import ActionChains
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
+from selenium.common.exceptions import TimeoutException, WebDriverException
+from webdriver_manager.chrome import ChromeDriverManager
+
+# --- BIBLIOTECAS DE IMPRESSÃO (WINDOWS) ---
+try:
+    import win32print
+    import win32api
+    TEM_IMPRESSORA = True
+except ImportError:
+    TEM_IMPRESSORA = False
+    print("⚠️ AVISO: Biblioteca de impressão não encontrada. Instale: pip install pywin32")
+
+# --- 1. VERIFICAÇÃO DE BIBLIOTECAS ---
+try:
+    import openpyxl
+    from openpyxl.styles import PatternFill, Font, Alignment
+    from openpyxl.utils import get_column_letter
+except ImportError:
+    print("❌ ERRO: FALTA 'openpyxl'. Instale com: pip install openpyxl")
+    input("Enter para sair..."); exit()
+
+try:
+    import geocoder
+    TEM_GPS = True
+except ImportError:
+    TEM_GPS = False
+    print("⚠️ AVISO: Sem GPS (instale: pip install geocoder)")
+
+# ================= CARREGAMENTO DE CONFIGURAÇÕES =================
+def carregar_configuracoes():
+    """Carrega todas as configurações do arquivo config.json"""
+    try:
+        with open('config.json', 'r', encoding='utf-8') as f:
+            config = json.load(f)
+        
+        configuracoes = {
+            'nome_grupo': config.get('grupo_whatsapp', 'Zé Número cliente'),
+            'endereco_loja': config.get('endereco_loja', 'Rua Sete de Setembro 1178, Chapecó'),
+            'email_ze': config.get('email_ze', ''),
+            'senha_ze': config.get('senha_ze', ''),
+            'telegram_token': config.get('telegram_token', ''),
+            'telegram_chat_id': config.get('telegram_chat_id', ''),
+            'path_backup': config.get('path_backup', ''),
+            'motoboys': config.get('motoboys', {}),
+            'bairros': config.get('bairros', {}),
+            'pix_motoboys': config.get('pix_motoboys', {}),
+            'google_sheets': config.get('google_sheets', {}),
+            'debug_alerta_retirada_todos': config.get('debug_alerta_retirada_todos', False),
+            'alerta_retirada_auto': config.get('alerta_retirada_auto', False),
+            'whatsapp_mencao_ativa': config.get('whatsapp_mencao_ativa', False)
+        }
+        
+        print("✅ Configurações carregadas do config.json")
+        return configuracoes
+    except FileNotFoundError:
+        print("❌ ERRO: Arquivo config.json não encontrado!")
+        return None
+    except json.JSONDecodeError as e:
+        print(f"❌ ERRO ao ler config.json: {e}")
+        return None
+
+def atualizar_config_flag(chave, valor):
+    """Atualiza um flag booleano no config.json e no CONFIG em memoria."""
+    global CONFIG
+    try:
+        with open('config.json', 'r', encoding='utf-8') as f:
+            config = json.load(f)
+        config[chave] = bool(valor)
+        with open('config.json', 'w', encoding='utf-8') as f:
+            json.dump(config, f, indent=4, ensure_ascii=False)
+        if CONFIG is not None:
+            CONFIG[chave] = bool(valor)
+        return True
+    except Exception as e:
+        print(f"❌ Erro ao atualizar config {chave}: {e}")
+        return False
+
+# Carrega as configurações
+CONFIG = carregar_configuracoes()
+if CONFIG is None:
+    print("❌ Não foi possível carregar as configurações. Encerrando...")
+    input("Pressione Enter para sair...")
+    exit()
+
+# ================= CONFIGURAÇÕES =================
+URL_API = "https://seller-api.ze.delivery/graphql"
+ENDERECO_LOJA = CONFIG['endereco_loja']
+NOME_GRUPO_FIXO = CONFIG['nome_grupo']
+
+DISTANCIA_MAXIMA_ENTRE_CLIENTES = 2.0 
+ANGULO_MAXIMO_DIFERENCA = 45 
+
+# Carrega motoboys do config
+MOTOBOYS_API = CONFIG['motoboys']
+
+# Carrega bairros do config
+BAIRROS_VALORES = CONFIG['bairros']
+BAIRROS_NAO_CADASTRADOS_LOGADOS = set()
+
+# Carrega Telegram do config
+TELEGRAM_TOKEN = CONFIG['telegram_token']
+TELEGRAM_CHAT_ID = CONFIG['telegram_chat_id']
+DEBUG_ALERTA_RETIRADA_TODOS = CONFIG.get('debug_alerta_retirada_todos', False)
+ALERTA_RETIRADA_AUTO = CONFIG.get('alerta_retirada_auto', False)
+
+STATUS_CANCELADOS_LISTA = [
+    "ABANDONED", "CANCEL", "DEVOLVIDO", "POC_ABANDONED", 
+    "CANCELLED", "POC_EXPIRED", "USER_CANCELLED", "SYS_CANCELLED",
+    "POC_REJECTED", "DELIVERY_FAILED"
+]
+
+STATUS_FINALIZADOS = STATUS_CANCELADOS_LISTA + ["DELIVERED", "POC_DELIVERED", "FINISHED"]
+
+# --- VARIÁVEIS GLOBAIS ---
+TOKEN_ATUAL = ""
+IDS_PROCESSADOS = set() 
+pedidos_ja_enviados = set()
+pedidos_em_espera = {} 
+CACHE_NOMES_DO_DIA = {} 
+CACHE_STATUS_PEDIDOS = {} 
+TIMESTAMP_ACEITOS = {}  # Guarda quando cada pedido foi CRIADO (hora original do pedido)
+ULTIMO_ALERTA_ESTOQUE = 0
+RELATORIO_ENVIADO_HOJE = False # <--- ADICIONE ISSO
+
+# === PROTEÇÃO ANTI-DETECÇÃO ===
+REQUISICOES_HOJE = 0
+DATA_ULTIMO_RESET = datetime.now().date()
+LIMITE_REQUISICOES_DIA = 3000  # Limite seguro por dia
+ERROS_CONSECUTIVOS = 0  # Para backoff exponencial
+
+driver = None
+LOJA_COORDS = None
+LAST_WHATSAPP_REFRESH = 0
+WHATSAPP_REFRESH_INTERVAL = 60 * 60 * 2
+LAST_ZE_REFRESH = 0
+ZE_DELIVERY_REFRESH_INTERVAL = 60 * 20
+LAST_CHROME_RESTART = 0
+CHROME_RESTART_COOLDOWN = 60 * 5

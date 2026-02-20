@@ -70,3 +70,8 @@ Ao iniciar a aplicação, o motor do robô chamará a função inicializar_excel
 
 5. Testes e Validação:
 Para comprovar as métricas de leitura e performance localmente, execute python teste_performance.py ou python validar_ambiente.py.
+
+**Desenvolvido por Adiel Alves**  
+**Data:** 20 de Fevereiro de 2026  
+**Versão:** 1.0 Otimizada  
+**Status:** ✅ Produção

@@ -220,7 +220,7 @@ MONITOR + ESTOQUE + BI + CONFIG + LOGS + MOTOS + BAIRROS →
    - GPS & LOCALIZAÇÃO
    - Credenciais & Autenticação
    - CHROME & NAVEGADOR
-   - API ZÉ DELIVERY
+   - API do serviço
    - EXCEL & Controle de Dados
    - WHATSAPP (leitura e resposta)
    - TELEGRAM (comandos e integração)

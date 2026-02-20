@@ -144,7 +144,7 @@ Responsável por: Garantir foco e monitorar mensagens
 
 ### **SEÇÃO 6: CHROME E NAVEGAÇÃO WEB**
 Linhas: ~1044-1186  
-Responsável por: Automação do browser para ZÉ Delivery  
+Responsável por: Automação do browser para o serviço  
 
 **Funções:**
 ```
@@ -159,7 +159,7 @@ Responsável por: Automação do browser para ZÉ Delivery
 
 ---
 
-### **SEÇÃO 7: API ZÉ DELIVERY**
+### **SEÇÃO 7: API do serviço**
 Linhas: ~187-272  
 Responsável por: Requisições HTTP e consultas de dados  
 

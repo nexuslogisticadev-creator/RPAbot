@@ -23,7 +23,7 @@
 4. SEÇÃO 4: Telegram Bot - Processamento de Comandos
 5. SEÇÃO 5: WhatsApp - Inteligência e Monitoramento
 6. SEÇÃO 6: Chrome e Navegação Web
-7. SEÇÃO 7: API Zé Delivery
+7. SEÇÃO 7: API do serviço
 8. SEÇÃO 8: Monitoramento e Sincronização
 9. SEÇÃO 9: Impressão Térmica e Recibos
 10. SEÇÃO 10: Relatórios e Análise

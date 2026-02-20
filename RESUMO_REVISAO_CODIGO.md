@@ -113,7 +113,7 @@ SEÇÃO 3: Telegram Bot - Inicialização
 SEÇÃO 4: Telegram Bot - Processamento de Comandos
 SEÇÃO 5: WhatsApp - Inteligência e Monitoramento
 SEÇÃO 6: Chrome e Navegação Web
-SEÇÃO 7: API Zé Delivery
+SEÇÃO 7: API do serviço
 SEÇÃO 8: Monitoramento e Sincronização
 SEÇÃO 9: Impressão Térmica e Recibos
 SEÇÃO 10: Relatórios e Análise

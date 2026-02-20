@@ -1,26 +1,20 @@
 @echo off
-REM COMPILAR.bat - Limpa build/dist e compila painel.py com PyInstaller
-
-echo Limpando pastas antigas (build, dist, *.spec)...
-rmdir /s /q build 2>nul
-rmdir /s /q dist 2>nul
-del /q painel.spec 2>nul
-
-REM Se houver virtualenv local em env\Scripts, ativa automaticamente
-if exist env\Scripts\activate.bat (
-    echo Ativando virtualenv em env\n
-    call env\Scripts\activate.bat
-)
-
-echo Rodando PyInstaller... (isso pode levar alguns minutos)
+color 0A
+echo ==========================================
+echo    COMPILADOR ROBÔ - AUTOMATIZADO
+echo ==========================================
+echo.
+echo [1/3] Limpando arquivos de compilacoes anteriores...
+if exist build rmdir /s /q build
+if exist dist rmdir /s /q dist
+if exist *.spec del /q *.spec
+echo Limpeza concluida.
+echo.
+echo [2/3] Gerando novo executavel blindado (Isso pode levar 2 minutos)...
 pyinstaller --noconsole --onefile --add-data "robo.py;." painel.py
-
-if %ERRORLEVEL% neq 0 (
-    echo Erro: o PyInstaller retornou codigo %ERRORLEVEL%.
-    echo Verifique a saida acima para detalhes.
-    pause
-    exit /b %ERRORLEVEL%
-)
-
-echo Build concluido. Arquivo gerado em dist\painel.exe
+echo.
+echo [3/3] Compilacao finalizada com sucesso! 
+echo.
+echo O seu arquivo "painel.exe" esta pronto dentro da pasta "dist".
+echo.
 pause

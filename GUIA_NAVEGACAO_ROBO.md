@@ -43,7 +43,7 @@ calcular_distancia_rota(origem, destino)
 
 ### ✅ SEÇÃO 4: CHROME & NAVEGADOR WEB
 **Localização:** Linhas ~1000-1200  
-**Responsabilidade:** Automação de browser para ZÉ Delivery
+**Responsabilidade:** Automação de browser para a plataforma
 
 ```
 iniciar_chrome_persistente()
@@ -52,7 +52,7 @@ enviar_mensagem_grupo(mensagem)
 
 ---
 
-### ✅ SEÇÃO 5: API ZÉ DELIVERY
+### ✅ SEÇÃO 5: API EXTERNA
 **Localização:** Linhas ~1250-1450  
 **Responsabilidade:** Integração com API da plataforma
 
@@ -257,7 +257,7 @@ Envia resultado de volta (via arquivo ou Telegram)
 ```python
 # Autenticação
 TELEGRAM_TOKEN              # Token do Telegram Bot
-TOKEN_ATUAL                 # Token da API Zé (renovado a cada sessão)
+TOKEN_ATUAL                 # Token da API da plataforma (renovado a cada sessão)
 CHROME_PERSISTENTE         # Instância do Chrome Selenium
 
 # Cache de Dados

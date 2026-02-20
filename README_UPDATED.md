@@ -1,4 +1,4 @@
-# 🚀 PAINEL ZÉ BOT - OTIMIZADO
+# 🚀 PAINEL BOT - OTIMIZADO
 
 ## ✨ Bem-vindo! Seu painel foi otimizado.
 
@@ -117,7 +117,7 @@ Benchmark completo
 
 ---
 
-**Desenvolvido com ❤️ por GitHub Copilot**  
+**Desenvolvido por **  
 **Data:** 20 de Fevereiro de 2026  
 **Versão:** 1.0 Otimizada  
 **Status:** ✅ Produção

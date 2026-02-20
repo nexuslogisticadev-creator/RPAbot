@@ -152,7 +152,7 @@ if CONFIG is None:
     exit()
 
 # ================= CONFIGURAÇÕES =================
-URL_API = CONFIG.get('site_url') or "https://seller-api.ze.delivery/graphql"
+URL_API = CONFIG.get('site_url') or "https://seller-api.example/graphql"
 NOME_GRUPO_FIXO = CONFIG['nome_grupo']
 
 DISTANCIA_MAXIMA_ENTRE_CLIENTES = 2.0 
@@ -280,9 +280,9 @@ def _resumir_payload(payload):
     return operation
 
 # ==================================================================================
-#  SEÇÃO 7: API ZÉ DELIVERY
+#  SEÇÃO 7: API EXTERNA
 # ==================================================================================
-# Responsável por: Fazer requisições HTTP seguras à API do Zé Delivery com
+# Responsável por: Fazer requisições HTTP seguras à API externa com
 # proteção contra detecção (User-Agent, delays aleatórios, tratamento de erros).
 # ==================================================================================
 
@@ -324,8 +324,8 @@ def requisicao_segura(payload):
         "Accept-Language": "pt-BR,pt;q=0.9,en-US;q=0.8,en;q=0.7",
         "Accept-Encoding": "gzip, deflate, br",
         "Content-Type": "application/json",
-        "Origin": "https://parceiros.ze.delivery",
-        "Referer": "https://parceiros.ze.delivery/",
+        "Origin": "https://parceiros.example.com",
+        "Referer": "https://parceiros.example.com/",
         "DNT": "1",
         "Connection": "keep-alive",
         "Sec-Fetch-Dest": "empty",
@@ -1294,7 +1294,7 @@ def _eh_sessao_invalida(exc):
 def _tratar_timeout_webdriver(contexto, exc):
     print(f"⚠️ {contexto}: {exc}")
     if _eh_timeout_webdriver(exc):
-        print("🧯 WebDriver sem resposta. Tentando recuperar Zé Delivery...")
+        print("🧯 WebDriver sem resposta. Tentando recuperar a plataforma...")
         _recarregar_ze_delivery("timeout webdriver")
     if _eh_sessao_invalida(exc):
         print("🔁 Sessao do Chrome invalida. Tentando reiniciar...")
@@ -1314,24 +1314,24 @@ def _recarregar_ze_delivery(motivo):
                 url = driver.current_url
             except WebDriverException:
                 continue
-            if "seu.ze.delivery" in url or "parceiros.ze.delivery" in url:
+            if "seu.example.com" in url or "parceiros.example.com" in url:
                 handle_ze = handle
                 break
 
         if handle_ze:
-            print(f"🔄 Recarregando Zé Delivery ({motivo})...")
+            print(f"🔄 Recarregando plataforma ({motivo})...")
             driver.refresh()
             WebDriverWait(driver, 60).until(
                 EC.presence_of_element_located((By.TAG_NAME, "body"))
             )
         else:
-            print(f"🧭 Abrindo Zé Delivery em nova aba ({motivo})...")
-            driver.execute_script("window.open('https://seu.ze.delivery/', '_blank');")
+            print(f"🧭 Abrindo plataforma em nova aba ({motivo})...")
+            driver.execute_script("window.open('https://seu.example.com/', '_blank');")
 
         if handle_atual in driver.window_handles:
             driver.switch_to.window(handle_atual)
     except Exception as e:
-        print(f"⚠️ Falha ao recuperar Zé Delivery: {e}")
+        print(f"⚠️ Falha ao recuperar a plataforma: {e}")
 
 def _executar_com_retentativas(contexto, func, tentativas=2, pausa=2):
     for tentativa in range(1, tentativas + 1):
@@ -1390,7 +1390,7 @@ def refresh_ze_delivery_periodically():
     try:
         _recarregar_ze_delivery("manutencao")
     except Exception as e:
-        print(f"⚠️ Erro ao atualizar Zé Delivery: {e}")
+        print(f"⚠️ Erro ao atualizar o serviço: {e}")
     finally:
         LAST_ZE_REFRESH = agora
 
@@ -1402,7 +1402,7 @@ ARQUIVO_ESTOQUE_BAIXAS = 'estoque_baixas.json'
 ARQUIVO_FECHAMENTO_STATUS = 'fechamento_status.json'
 ARQUIVO_ALERTAS = 'alertas_atraso.json'
 def carregar_credenciais():
-    """Retorna credenciais do Zé Delivery do CONFIG global"""
+    """Retorna credenciais da plataforma do CONFIG global"""
     global TELEGRAM_TOKEN, TELEGRAM_CHAT_ID 
     
     # Usa as configurações já carregadas no início
@@ -1434,7 +1434,7 @@ def carregar_motoboys_do_painel():
 #  SEÇÃO 6: CHROME E NAVEGAÇÃO WEB
 # ==================================================================================
 # Responsável por: Inicializar e gerenciar instância persistente do Chrome
-# Selenium para automação de navegação no WhatsApp e Zé Delivery.
+# Selenium para automação de navegação no WhatsApp e na plataforma de pedidos.
 # ==================================================================================
 
 def iniciar_chrome_persistente():
@@ -1468,7 +1468,10 @@ def iniciar_chrome_persistente():
             """
         })
         
-        driver.get("https://seu.ze.delivery/")
+        try:
+            driver.get(URL_API)
+        except NameError:
+            driver.get("https://seu.site/")
         
         email_cfg, senha_cfg = carregar_credenciais()
         if email_cfg and senha_cfg:
@@ -2427,7 +2430,7 @@ def verificar_comandos_telegram():
 
                 # --- 1. AJUDA ---
                 if comando in ["ajuda", "help", "start"]:
-                    msg = ("🤖 *ZÉ-BOT: MENU DE COMANDOS*\n\n"
+                    msg = ("🤖 *BOT: MENU DE COMANDOS*\n\n"
                            "🔹 `/status` - Ver se o robô está online\n"
                            "🔹 `/resumo` - Total taxas de corridas e total do dia\n"
                            "🔹 `/motos` - Ver entregadores na rua\n"
@@ -2968,7 +2971,7 @@ def processar_baixa_estoque(itens_texto, pedido_num=None, baixas_cache=None):
         alterado = False
         itens_nao_encontrados = []
 
-        # Divide a string do Zé (ex: "2x Skol 350ml, 1x Brahma")
+        # Divide a string do pedido (ex: "2x Skol 350ml, 1x Brahma")
         partes = itens_texto.lower().split(',')
         
         for item_str in partes:
@@ -2992,7 +2995,7 @@ def processar_baixa_estoque(itens_texto, pedido_num=None, baixas_cache=None):
                 # Padroniza variações de sabores/tipos
                 n = n.replace('double darkness', 'whisky')
                 n = n.replace('gin melancia', 'gin_melancia')
-                # Trata "combo" e "cafeína" como equivalentes (Zé usa "combo", estoque usa "cafeína")
+                # Trata "combo" e "cafeína" como equivalentes (a plataforma usa "combo", estoque usa "cafeína")
                 n = n.replace('cafeína', 'combo')
                 n = n.replace('cafeina', 'combo')
                 # Normaliza "combo" com maiúsculas/minúsculas
@@ -3063,7 +3066,7 @@ def processar_baixa_estoque(itens_texto, pedido_num=None, baixas_cache=None):
         # Alerta se não achou algum item
         if itens_nao_encontrados:
             msg = "⚠️ *ITEM NÃO ENCONTRADO NO ESTOQUE*\n"
-            msg += "O Zé vendeu, mas não dei baixa:\n"
+            msg += "A plataforma vendeu, mas não dei baixa:\n"
             for i in itens_nao_encontrados:
                 msg += f"• {i}\n"
             print(msg)
@@ -3203,7 +3206,7 @@ def processar_estorno_estoque(itens_texto):
                 # Padroniza variações de sabores/tipos
                 n = n.replace('double darkness', 'whisky')
                 n = n.replace('gin melancia', 'gin_melancia')
-                # Trata "combo" e "cafeína" como equivalentes (Zé usa "combo", estoque usa "cafeína")
+                # Trata "combo" e "cafeína" como equivalentes (a plataforma usa "combo", estoque usa "cafeína")
                 n = n.replace('cafeína', 'combo')
                 n = n.replace('cafeina', 'combo')
                 # Normaliza "combo" com maiúsculas/minúsculas
@@ -3285,7 +3288,7 @@ def start():
     Função principal: inicia o robô em modo contínuo.
     Sincroniza dados iniciais e entra em loop infinito de monitoramento.
     """
-    print("\n🚀 INICIANDO ZÉ-BOT TURBO (MODO STEALTH v2 - CHROME)")
+    print("\n🚀 INICIANDO BOT TURBO (MODO STEALTH v2 - CHROME)")
     
     # --- AQUI COMEÇA A EXECUÇÃO REAL ---
     # Sequência de inicialização:
@@ -3317,7 +3320,7 @@ def start():
             
             processar_comando_painel()      # Comandos da Interface
             verificar_comandos_telegram()   # <--- ESSENCIAL: Comandos do Telegram
-            monitorar()                     # API do Zé
+            monitorar()                     # API da plataforma
             verificar_solicitacoes_whatsapp() # Ler Grupo Zap
 
             # Rechecagem rapida para reduzir latencia de comandos do painel

@@ -2,7 +2,7 @@
 
 ## Resumo das Melhorias Implementadas
 
-Este documento descreve as otimizações implementadas para resolver o problema de performance do painel Zé Delivery.
+Este documento descreve as otimizações implementadas para resolver o problema de performance do painel de pedidos.
 
 ---
 

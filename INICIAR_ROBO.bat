@@ -1,4 +1,4 @@
 @echo off
-REM Inicia o painel Zé Delivery
+REM Inicia o painel
 python painel.py
 pause

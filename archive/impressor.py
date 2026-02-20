@@ -120,7 +120,7 @@ def buscar_e_imprimir_do_excel(termo_busca):
             print("⚠️ Nenhum pedido encontrado com esse termo.")
             return
 
-        # 3. Montar Ticket (Estilo Zé Delivery Compacto)
+        # 3. Montar Ticket (Estilo compacto - plataforma)
         print(f"🖨️ Encontrados {len(pedidos_encontrados)} pedidos. Imprimindo...")
         
         buffer = CMD_INIT + CMD_LEFT + CMD_BOLD_ON

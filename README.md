@@ -1,11 +1,11 @@
-# 🚀 PAINEL ZÉ BOT - OTIMIZADO
+# 🚀 PAINEL BOT - OTIMIZADO
 
 ## ✨ Bem-vindo! Seu painel foi otimizado.
 
 Este documento resume as otimizações implementadas para resolver o problema de performance.
 
 ````markdown
-# 🚀 PAINEL ZÉ BOT - OTIMIZADO
+# 🚀 PAINEL BOT - OTIMIZADO
 
 ## ✨ Bem-vindo! Seu painel foi otimizado.
 
@@ -227,7 +227,7 @@ def _auto_refresh_inteligente(self):
 
 ```
 ┌─────────────────────────────────────────┐
-│      PAINEL ZÉ DELIVERY (OTIMIZADO)    │
+│      PAINEL DELIVERY (OTIMIZADO)    │
 ├─────────────────────────────────────────┤
 │                                         │
 │  UI Principal (CustomTkinter)           │
@@ -321,7 +321,7 @@ python painel.py
 
 ## ✨ Conclusão
 
-Seu painel Zé Delivery foi completamente otimizado com **5 melhorias estratégicas** que resultam em:
+Seu painel Delivery foi completamente otimizado com **5 melhorias estratégicas** que resultam em:
 
 🎯 **70-90% de melhoria de performance**  
 ⚡ **Resposta instantânea da UI**  

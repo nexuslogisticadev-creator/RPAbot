@@ -2,7 +2,7 @@
 
 ## Visão Geral
 
-- `robo.py`: automação e integração com WhatsApp/ZE, leitura/escrita de Excel, gerenciamento de estoque, notificações (Telegram/Grupos), e monitoramento contínuo (`start`, `monitorar`, `iniciar_chrome_persistente`).
+- `robo.py`: automação e integração com WhatsApp/plataforma de pedidos, leitura/escrita de Excel, gerenciamento de estoque, notificações (Telegram/Grupos), e monitoramento contínuo (`start`, `monitorar`, `iniciar_chrome_persistente`).
 - `painel.py`: interface gráfica (CustomTkinter) para controlar o robô, visualizar/extrair fechamentos, gerenciar vales e estoque, ver logs e fazer backups. Entradas principais: `iniciar_robo`, `parar_robo`, `gerar_excel_fechamento`, `carregar_estoque`.
 
 ## Uso rápido

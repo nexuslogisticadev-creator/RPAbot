@@ -1,5 +1,47 @@
 # 🚀 PAINEL BOT - OTIMIZADO
 
+**Uso rápido**
+
+- Requisitos: Python 3.10+ e dependências em `requirements.txt`.
+- Instalação de dependências:
+
+```bash
+python -m pip install --upgrade pip
+pip install -r requirements.txt
+```
+
+- Executar em modo desenvolvimento:
+
+```bash
+python painel.py
+```
+
+- Executável (Release): baixe o instalador/binário em:
+    https://github.com/nexuslogisticadev-creator/portfolio-RPAbot/releases
+
+**Build (gerar EXE)**
+
+- `COMPILAR.bat` está incluído para gerar o executável via PyInstaller. Exemplo manual:
+
+```bash
+pyinstaller --noconsole --onefile --add-data "robo.py;." painel.py
+```
+
+Após gerar, publique os binários como assets na página de Releases (recomendado) ou use Git LFS.
+
+**Segurança / Tokens**
+
+- Não comite tokens/API keys no repositório. Use `GITHUB_TOKEN`/variáveis de ambiente ou o Git Credential Manager. Revogue tokens expostos imediatamente.
+
+**Links úteis**
+
+- Releases: https://github.com/nexuslogisticadev-creator/portfolio-RPAbot/releases
+
+**Contribuindo**
+
+- Abra issues para bugs e feature requests. Envie PRs contra `master`; o CI roda `pytest` e `flake8` automaticamente.
+
+
 ## ✨ Bem-vindo! Seu painel foi otimizado.
 
 Este documento resume as otimizações implementadas para resolver o problema de performance.

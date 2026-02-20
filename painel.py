@@ -2461,49 +2461,50 @@ class PainelUltra(ctk.CTk):
     # ==================================================================================
 
     def setup_aba_config(self, parent):
-        fr = ctk.CTkFrame(parent, fg_color=COR_CARD_BG, corner_radius=15, border_width=1, border_color=COR_BORDA)
-        fr.place(relx=0.5, rely=0.5, anchor="center")
+        # Frame rolável para garantir que todos os campos caibam em janelas pequenas
+        fr = ctk.CTkScrollableFrame(parent, fg_color=COR_CARD_BG, corner_radius=15, border_width=1, border_color=COR_BORDA)
+        fr.pack(fill="both", expand=True, padx=20, pady=10)
 
-        ctk.CTkLabel(fr, text="CONFIGURAÇÕES GERAIS", font=FONT_TITLE).pack(pady=20, padx=60)
+        ctk.CTkLabel(fr, text="CONFIGURAÇÕES GERAIS", font=FONT_TITLE).pack(pady=20)
 
-        self.ent_email = ctk.CTkEntry(fr, placeholder_text="E-mail ", width=350)
-        self.ent_email.pack(pady=5)
+        self.ent_email = ctk.CTkEntry(fr, placeholder_text="E-mail ")
+        self.ent_email.pack(pady=5, fill='x', padx=40)
         self.ent_email.insert(0, self.config_data.get("email", ""))
 
-        self.ent_senha = ctk.CTkEntry(fr, placeholder_text="Senha", show="●", width=350)
-        self.ent_senha.pack(pady=5)
+        self.ent_senha = ctk.CTkEntry(fr, placeholder_text="Senha", show="●")
+        self.ent_senha.pack(pady=5, fill='x', padx=40)
         self.ent_senha.insert(0, self.config_data.get("senha", ""))
 
         ctk.CTkLabel(fr, text="📱 Telegram", font=FONT_BOLD, text_color=COR_AMARELO).pack(pady=(15, 5))
 
-        self.ent_tele_token = ctk.CTkEntry(fr, placeholder_text="Token Bot", width=350)
-        self.ent_tele_token.pack(pady=5)
+        self.ent_tele_token = ctk.CTkEntry(fr, placeholder_text="Token Bot")
+        self.ent_tele_token.pack(pady=5, fill='x', padx=40)
         self.ent_tele_token.insert(0, self.config_data.get("telegram_token", ""))
 
-        self.ent_tele_chat = ctk.CTkEntry(fr, placeholder_text="Seu Chat ID", width=350)
-        self.ent_tele_chat.pack(pady=5)
+        self.ent_tele_chat = ctk.CTkEntry(fr, placeholder_text="Seu Chat ID")
+        self.ent_tele_chat.pack(pady=5, fill='x', padx=40)
         self.ent_tele_chat.insert(0, self.config_data.get("telegram_chat_id", ""))
 
         ctk.CTkLabel(fr, text="🧾 Google Sheets", font=FONT_BOLD, text_color=COR_AMARELO).pack(pady=(15, 5))
 
         sheets_cfg = self.config_data.get("google_sheets", {})
-        self.ent_sheets_id = ctk.CTkEntry(fr, placeholder_text="Sheets ID", width=350)
-        self.ent_sheets_id.pack(pady=5)
+        self.ent_sheets_id = ctk.CTkEntry(fr, placeholder_text="Sheets ID")
+        self.ent_sheets_id.pack(pady=5, fill='x', padx=40)
         self.ent_sheets_id.insert(0, sheets_cfg.get("sheets_id", ""))
 
-        self.ent_sheets_json = ctk.CTkEntry(fr, placeholder_text="Service Account JSON (caminho)", width=350)
-        self.ent_sheets_json.pack(pady=5)
+        self.ent_sheets_json = ctk.CTkEntry(fr, placeholder_text="Service Account JSON (caminho)")
+        self.ent_sheets_json.pack(pady=5, fill='x', padx=40)
         self.ent_sheets_json.insert(0, sheets_cfg.get("service_account_json", ""))
 
         ctk.CTkLabel(fr, text="🌐 Site / API URL", font=FONT_BOLD, text_color=COR_AMARELO).pack(pady=(15, 5))
-        self.ent_site_url = ctk.CTkEntry(fr, placeholder_text="https://seu-site-ou-api", width=350)
-        self.ent_site_url.pack(pady=5)
+        self.ent_site_url = ctk.CTkEntry(fr, placeholder_text="https://seu-site-ou-api")
+        self.ent_site_url.pack(pady=5, fill='x', padx=40)
         self.ent_site_url.insert(0, self.config_data.get("site_url", ""))
 
         ctk.CTkLabel(fr, text="🛒 Lista de Compras", font=FONT_BOLD, text_color=COR_AMARELO).pack(pady=(15, 5))
         
-        self.ent_compras_ignore = ctk.CTkEntry(fr, placeholder_text="Itens a ignorar, separados por vírgula", width=350)
-        self.ent_compras_ignore.pack(pady=5)
+        self.ent_compras_ignore = ctk.CTkEntry(fr, placeholder_text="Itens a ignorar, separados por vírgula")
+        self.ent_compras_ignore.pack(pady=5, fill='x', padx=40)
         self.ent_compras_ignore.insert(0, self.config_data.get("compras_ignore_list", ""))
 
         ctk.CTkLabel(fr, text="📢 WhatsApp Alertas", font=FONT_BOLD, text_color=COR_AMARELO).pack(pady=(15, 5))
